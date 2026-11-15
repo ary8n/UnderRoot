@@ -40,6 +40,10 @@ function saveProgress() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(pr
 const player = { x: world.spawn.x, y: world.spawn.y, facing: 'down', moving: false, step: 0 };
 const camera = { x: 0, y: 0 };
 const keys = new Set();
+const moveStick = document.querySelector('#move-stick');
+const moveStickKnob = moveStick?.querySelector('.move-stick__knob');
+const virtualStick = { x: 0, y: 0 };
+let stickPointerId = null;
 let scene = 'title';
 let paused = false;
 let dialog = null;
@@ -187,6 +191,50 @@ function startGame() {
   camera.y = Math.max(0, Math.min(world.height - H, player.y - H / 2));
   canvas.focus({ preventScroll: true });
 }
+function updateVirtualStick(event) {
+  if (!moveStick || !moveStickKnob) return;
+  const bounds = moveStick.getBoundingClientRect();
+  const limit = bounds.width * .27;
+  let dx = (event.clientX - (bounds.left + bounds.width / 2)) / limit;
+  let dy = (event.clientY - (bounds.top + bounds.height / 2)) / limit;
+  const magnitude = Math.hypot(dx, dy);
+  if (magnitude > 1) { dx /= magnitude; dy /= magnitude; }
+  const strength = Math.hypot(dx, dy);
+  if (strength < .14) { virtualStick.x = 0; virtualStick.y = 0; }
+  else {
+    const adjusted = (Math.min(1, strength) - .14) / .86;
+    virtualStick.x = dx / strength * adjusted;
+    virtualStick.y = dy / strength * adjusted;
+  }
+  moveStickKnob.style.transform = `translate(-50%,-50%) translate(${dx * limit}px,${dy * limit}px)`;
+}
+function resetVirtualStick(event) {
+  if (stickPointerId !== null && event && event.pointerId !== stickPointerId) return;
+  stickPointerId = null;
+  virtualStick.x = 0; virtualStick.y = 0;
+  if (moveStickKnob) moveStickKnob.style.transform = 'translate(-50%,-50%)';
+}
+moveStick?.addEventListener('pointerdown', event => {
+  event.preventDefault();
+  stickPointerId = event.pointerId;
+  moveStick.setPointerCapture(event.pointerId);
+  updateVirtualStick(event);
+});
+moveStick?.addEventListener('pointermove', event => {
+  if (event.pointerId === stickPointerId) { event.preventDefault(); updateVirtualStick(event); }
+});
+moveStick?.addEventListener('pointerup', resetVirtualStick);
+moveStick?.addEventListener('pointercancel', resetVirtualStick);
+moveStick?.addEventListener('lostpointercapture', resetVirtualStick);
+document.querySelector('#touch-interact')?.addEventListener('click', () => {
+  if (scene === 'title') startGame();
+  else interact();
+});
+document.querySelector('#touch-pause')?.addEventListener('click', () => {
+  if (scene !== 'play') return;
+  paused = !paused; dialog = null; keys.clear(); resetVirtualStick();
+  document.querySelector('#touch-pause')?.setAttribute('aria-pressed', String(paused));
+});
 canvas.addEventListener('pointerdown', event => {
   if (scene === 'title') { startGame(); return; }
   canvas.focus({ preventScroll: true });
@@ -205,18 +253,18 @@ document.addEventListener('keydown', event => {
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(code)) event.preventDefault();
   if (code === 'F3' && !event.repeat) { event.preventDefault(); collisionDebug = !collisionDebug; keys.clear(); return; }
   if (scene === 'title' && ['Enter', 'Space'].includes(code)) { startGame(); return; }
-  if (code === 'Escape' && !event.repeat && scene === 'play') { paused = !paused; dialog = null; keys.clear(); return; }
+  if (code === 'Escape' && !event.repeat && scene === 'play') { paused = !paused; dialog = null; keys.clear(); resetVirtualStick(); document.querySelector('#touch-pause')?.setAttribute('aria-pressed', String(paused)); return; }
   if (code === 'KeyE' && !event.repeat && scene === 'play') { interact(); return; }
   if (['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(code)) keys.add(code);
 }, { capture: true });
 document.addEventListener('keyup', event => keys.delete(event.code), { capture: true });
-window.addEventListener('blur', () => keys.clear());
+window.addEventListener('blur', () => { keys.clear(); resetVirtualStick(); });
 
 function update(dt) {
   clock += dt * 1000;
   if (scene !== 'play' || paused || dialog) { player.moving = false; return; }
-  const dx = Number(keys.has('KeyD') || keys.has('ArrowRight')) - Number(keys.has('KeyA') || keys.has('ArrowLeft'));
-  const dy = Number(keys.has('KeyS') || keys.has('ArrowDown')) - Number(keys.has('KeyW') || keys.has('ArrowUp'));
+  const dx = Math.max(-1, Math.min(1, Number(keys.has('KeyD') || keys.has('ArrowRight')) - Number(keys.has('KeyA') || keys.has('ArrowLeft')) + virtualStick.x));
+  const dy = Math.max(-1, Math.min(1, Number(keys.has('KeyS') || keys.has('ArrowDown')) - Number(keys.has('KeyW') || keys.has('ArrowUp')) + virtualStick.y));
   player.moving = dx !== 0 || dy !== 0;
   if (player.moving) {
     const length = Math.hypot(dx, dy);
