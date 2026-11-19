@@ -1,0 +1,1459 @@
+{
+ "meta": {
+  "name": "Pixel Platformer Underground Cave and Crystal Tileset",
+  "tile_size": 16,
+  "image": "spritesheet.png",
+  "count": 209
+ },
+ "frames": {
+  "stone_tl": {
+   "x": 0,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_top": {
+   "x": 16,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_tr": {
+   "x": 32,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_left": {
+   "x": 48,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_center": {
+   "x": 64,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_right": {
+   "x": 80,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_bl": {
+   "x": 96,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_bottom": {
+   "x": 112,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_br": {
+   "x": 128,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_plat_left": {
+   "x": 144,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "stone_plat_mid": {
+   "x": 160,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "stone_plat_right": {
+   "x": 176,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "stone_fill_b": {
+   "x": 192,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "stone_block": {
+   "x": 208,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_tl": {
+   "x": 224,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_top": {
+   "x": 240,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_tr": {
+   "x": 256,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_left": {
+   "x": 272,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_center": {
+   "x": 288,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_right": {
+   "x": 304,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_bl": {
+   "x": 320,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_bottom": {
+   "x": 336,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_br": {
+   "x": 352,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_plat_left": {
+   "x": 368,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "crystal_plat_mid": {
+   "x": 384,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "crystal_plat_right": {
+   "x": 400,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "crystal_fill_b": {
+   "x": 416,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "crystal_block": {
+   "x": 432,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_tl": {
+   "x": 448,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_top": {
+   "x": 464,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_tr": {
+   "x": 480,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_left": {
+   "x": 496,
+   "y": 0,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_center": {
+   "x": 0,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_right": {
+   "x": 16,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_bl": {
+   "x": 32,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_bottom": {
+   "x": 48,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_br": {
+   "x": 64,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_plat_left": {
+   "x": 80,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "lava_plat_mid": {
+   "x": 96,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "lava_plat_right": {
+   "x": 112,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "lava_fill_b": {
+   "x": 128,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "lava_block": {
+   "x": 144,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_tl": {
+   "x": 160,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_top": {
+   "x": 176,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_tr": {
+   "x": 192,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_left": {
+   "x": 208,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_center": {
+   "x": 224,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_right": {
+   "x": 240,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_bl": {
+   "x": 256,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_bottom": {
+   "x": 272,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_br": {
+   "x": 288,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_plat_left": {
+   "x": 304,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "ice_plat_mid": {
+   "x": 320,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "ice_plat_right": {
+   "x": 336,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "ice_fill_b": {
+   "x": 352,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "ice_block": {
+   "x": 368,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_tl": {
+   "x": 384,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_top": {
+   "x": 400,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_tr": {
+   "x": 416,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_left": {
+   "x": 432,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_center": {
+   "x": 448,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_right": {
+   "x": 464,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_bl": {
+   "x": 480,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_bottom": {
+   "x": 496,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_br": {
+   "x": 0,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_plat_left": {
+   "x": 16,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "mine_plat_mid": {
+   "x": 32,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "mine_plat_right": {
+   "x": 48,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "platforms"
+  },
+  "mine_fill_b": {
+   "x": 64,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "mine_block": {
+   "x": 80,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "terrain"
+  },
+  "cave_wall": {
+   "x": 96,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "background"
+  },
+  "moss_bg": {
+   "x": 112,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "background"
+  },
+  "dirt_bg": {
+   "x": 128,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "background"
+  },
+  "deep_bg": {
+   "x": 144,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "background"
+  },
+  "lava_top_a": {
+   "x": 160,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "lava_top_b": {
+   "x": 176,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "lava_fill": {
+   "x": 192,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "acid_top_a": {
+   "x": 208,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "acid_top_b": {
+   "x": 224,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "acid_fill": {
+   "x": 240,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "water_top_a": {
+   "x": 256,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "water_top_b": {
+   "x": 272,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "water_fill": {
+   "x": 288,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "liquid"
+  },
+  "crystal_blue": {
+   "x": 304,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_purple": {
+   "x": 320,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_green": {
+   "x": 336,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_red": {
+   "x": 352,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_amber": {
+   "x": 368,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_cyan": {
+   "x": 384,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_cluster": {
+   "x": 400,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_ceiling": {
+   "x": 416,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_wall_l": {
+   "x": 432,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "crystal_wall_r": {
+   "x": 448,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "geode": {
+   "x": 464,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "ore_gold": {
+   "x": 480,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "ore_iron": {
+   "x": 496,
+   "y": 32,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "ore_coal": {
+   "x": 0,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "ore_diamond": {
+   "x": 16,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "ore_ruby": {
+   "x": 32,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "crystals"
+  },
+  "stalagmite": {
+   "x": 48,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "stalagmite_small": {
+   "x": 64,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "stalactite": {
+   "x": 80,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "stalactite_small": {
+   "x": 96,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "column": {
+   "x": 112,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "cave_moss": {
+   "x": 128,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "cave_vine": {
+   "x": 144,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "mushroom_glow": {
+   "x": 160,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "mushroom_purple": {
+   "x": 176,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "mushroom_cluster": {
+   "x": 192,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "fern_cave": {
+   "x": 208,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "root_hang": {
+   "x": 224,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "cobweb": {
+   "x": 240,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "bone_pile": {
+   "x": 256,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "rock_small": {
+   "x": 384,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "rock_large": {
+   "x": 400,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "rubble": {
+   "x": 304,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "firefly_a": {
+   "x": 320,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "firefly_b": {
+   "x": 336,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "glow_orb": {
+   "x": 352,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "mine_support": {
+   "x": 368,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "mine_beam": {
+   "x": 384,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "mine_rail": {
+   "x": 400,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "minecart": {
+   "x": 416,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "pickaxe": {
+   "x": 432,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "dwarf_lantern": {
+   "x": 448,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "plants"
+  },
+  "spikes_up": {
+   "x": 464,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "spikes_down": {
+   "x": 480,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "spikes_left": {
+   "x": 496,
+   "y": 48,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "spikes_right": {
+   "x": 0,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "thorn_bush": {
+   "x": 16,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "thorn_vine": {
+   "x": 32,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "poison_flower": {
+   "x": 48,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "poison_bubble_a": {
+   "x": 64,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "poison_bubble_b": {
+   "x": 80,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "tiki_fire": {
+   "x": 96,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "skull_post": {
+   "x": 112,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "quicksand": {
+   "x": 128,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "dart_trap": {
+   "x": 144,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "falling_rock": {
+   "x": 160,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "hazards"
+  },
+  "crate": {
+   "x": 176,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "barrel": {
+   "x": 192,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "clay_pot": {
+   "x": 208,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "treasure_closed": {
+   "x": 224,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "treasure_open": {
+   "x": 240,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "signpost": {
+   "x": 256,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "lantern": {
+   "x": 272,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "torch_a": {
+   "x": 288,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "torch_b": {
+   "x": 304,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "campfire": {
+   "x": 320,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "dwarf_mask": {
+   "x": 336,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "totem": {
+   "x": 352,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "stone_idol": {
+   "x": 368,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "boulder_mossy": {
+   "x": 416,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "skull": {
+   "x": 432,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "bones": {
+   "x": 448,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "hammock": {
+   "x": 464,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "rope_ladder": {
+   "x": 480,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "canoe": {
+   "x": 496,
+   "y": 64,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "paddle": {
+   "x": 0,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "hut_roof": {
+   "x": 16,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "hut_wall": {
+   "x": 32,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "hut_door": {
+   "x": 48,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "rope_bridge_left": {
+   "x": 64,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "rope_bridge_mid": {
+   "x": 80,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "rope_bridge_right": {
+   "x": 96,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "props"
+  },
+  "spring_idle": {
+   "x": 112,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "spring_extended": {
+   "x": 128,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "lever_off": {
+   "x": 144,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "lever_on": {
+   "x": 160,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "button_up": {
+   "x": 176,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "button_pressed": {
+   "x": 192,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "checkpoint_off": {
+   "x": 208,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "checkpoint_on": {
+   "x": 224,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "crumbling_block": {
+   "x": 240,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "vine_block": {
+   "x": 256,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "question_block": {
+   "x": 272,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "used_block": {
+   "x": 288,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "temple_portal": {
+   "x": 304,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "vine_swing": {
+   "x": 320,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "gadgets"
+  },
+  "log_left": {
+   "x": 336,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "moving_platform"
+  },
+  "log_mid": {
+   "x": 352,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "moving_platform"
+  },
+  "log_right": {
+   "x": 368,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "moving_platform"
+  },
+  "leaf_left": {
+   "x": 384,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "moving_platform"
+  },
+  "leaf_mid": {
+   "x": 400,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "moving_platform"
+  },
+  "leaf_right": {
+   "x": 416,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "moving_platform"
+  },
+  "coin_spin_0": {
+   "x": 432,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "coin_spin_1": {
+   "x": 448,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "coin_spin_2": {
+   "x": 464,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "coin_spin_3": {
+   "x": 480,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "gem_green": {
+   "x": 496,
+   "y": 80,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "gem_red": {
+   "x": 0,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "gem_blue": {
+   "x": 16,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "golden_idol": {
+   "x": 32,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "cave_key": {
+   "x": 48,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "heart": {
+   "x": 64,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "feather": {
+   "x": 80,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "health_fruit": {
+   "x": 96,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "collectibles"
+  },
+  "toad_a": {
+   "x": 112,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "toad_b": {
+   "x": 128,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "snake_a": {
+   "x": 144,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "snake_b": {
+   "x": 160,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "bat_a": {
+   "x": 176,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "bat_b": {
+   "x": 192,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "cave_slime": {
+   "x": 208,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "spider": {
+   "x": 224,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "mask_ghost": {
+   "x": 240,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  },
+  "stone_golem": {
+   "x": 256,
+   "y": 96,
+   "w": 16,
+   "h": 16,
+   "category": "enemies"
+  }
+ }
+}

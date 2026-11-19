@@ -1,0 +1,24 @@
+{
+  "total_rasters": 964,
+  "canonical_rasters": 755,
+  "x4_duplicates_excluded": 209,
+  "byte_distinct_canonical": 751,
+  "packs": {
+    "IndustrialPunk": 485,
+    "Underground Cave and Crystal": 239,
+    "Sci-fi Planet Add-ons": 2,
+    "Woods": 24,
+    "PostApoc Workshop": 5
+  },
+  "categories": {
+    "Industrial and post-apocalyptic": 516,
+    "Backgrounds and parallax": 10,
+    "Forest and vegetation": 13,
+    "Mushrooms and fungi": 22,
+    "Terrain and soil": 35,
+    "Effects and UI": 74,
+    "Underground and caves": 69,
+    "Computers and terminals": 14,
+    "Sci-fi and retro technology": 2
+  }
+}
