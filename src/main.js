@@ -8,9 +8,42 @@ if (!canvas) throw new Error('UNDERROOT: canvas #game is missing from index.html
 const ctx = canvas.getContext('2d', { alpha: false });
 if (!ctx) throw new Error('UNDERROOT: Canvas 2D context is unavailable');
 
-const W = canvas.width = 384;
-const H = canvas.height = 256;
+const BASE_W = 384;
+const BASE_H = 256;
+let W = BASE_W;
+let H = BASE_H;
+let mapZoom = 1;
+let screenScale = 1;
 ctx.imageSmoothingEnabled = false;
+function viewWidth() { return W / mapZoom; }
+function viewHeight() { return H / mapZoom; }
+function cameraForPlayer() {
+  const width = viewWidth(), height = viewHeight();
+  return {
+    x: world.width <= width ? (world.width - width) / 2 : Math.max(0, Math.min(world.width - width, player.x - width / 2)),
+    y: world.height <= height ? (world.height - height) / 2 : Math.max(0, Math.min(world.height - height, player.y - height / 2)),
+  };
+}
+function focusCameraOnPlayer() {
+  const target = cameraForPlayer();
+  camera.x = target.x;
+  camera.y = target.y;
+}
+function resizeCanvas() {
+  const bounds = canvas.getBoundingClientRect();
+  if (!bounds.width || !bounds.height) return;
+  screenScale = Math.max(Math.min(bounds.width / BASE_W, bounds.height / BASE_H), 1.25);
+  W = Math.max(1, Math.round(bounds.width / screenScale));
+  H = Math.max(1, Math.round(bounds.height / screenScale));
+  const shortSide = Math.min(bounds.width, bounds.height);
+  mapZoom = shortSide <= 520 ? .68 : shortSide <= 900 ? .78 : .9;
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width = W;
+    canvas.height = H;
+    ctx.imageSmoothingEnabled = false;
+  }
+  focusCameraOnPlayer();
+}
 let mapArt = null;
 let mapReady = false;
 let mapFailed = false;
@@ -39,6 +72,8 @@ function saveProgress() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(pr
 
 const player = { x: world.spawn.x, y: world.spawn.y, facing: 'down', moving: false, step: 0 };
 const camera = { x: 0, y: 0 };
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 const keys = new Set();
 const moveStick = document.querySelector('#move-stick');
 const moveStickKnob = moveStick?.querySelector('.move-stick__knob');
@@ -93,8 +128,7 @@ function transitionWorld(nextWorld, spawn = nextWorld.spawn) {
   player.x = spawn.x; player.y = spawn.y; player.moving = false; player.facing = 'down';
   keys.clear(); dialog = null; paused = false; notice = '';
   currentRoom = roomAt(player.x, player.y);
-  camera.x = Math.max(0, Math.min(world.width - W, player.x - W / 2));
-  camera.y = Math.max(0, Math.min(world.height - H, player.y - H / 2));
+  focusCameraOnPlayer();
   loadMapArt();
   say(world.id === 'underground-night' ? 'THE ROOT REACTOR STIRS BELOW.' : 'BACK TO THE GREENHOUSE.');
 }
@@ -159,8 +193,7 @@ function interact(targetOverride = null) {
 function startGame() {
   scene = 'play'; paused = false;
   currentRoom = roomAt(player.x, player.y);
-  camera.x = Math.max(0, Math.min(world.width - W, player.x - W / 2));
-  camera.y = Math.max(0, Math.min(world.height - H, player.y - H / 2));
+  focusCameraOnPlayer();
   canvas.focus({ preventScroll: true });
 }
 function updateVirtualStick(event) {
@@ -205,8 +238,8 @@ function updateTouchControls() {
   touchInteract.setAttribute('aria-label', dialog ? 'Continue' : `Inspect ${target.title}`);
   const scaleX = canvas.clientWidth / W;
   const scaleY = canvas.clientHeight / H;
-  const targetX = (target.x - camera.x) * scaleX;
-  const targetY = (target.y - camera.y) * scaleY;
+  const targetX = (target.x - camera.x) * mapZoom * scaleX;
+  const targetY = (target.y - camera.y) * mapZoom * scaleY;
   const buttonWidth = touchInteract.offsetWidth;
   const buttonHeight = touchInteract.offsetHeight;
   const left = Math.max(buttonWidth / 2 + 12, Math.min(canvas.clientWidth - buttonWidth / 2 - 12, targetX));
@@ -241,8 +274,8 @@ canvas.addEventListener('pointerdown', event => {
   canvas.focus({ preventScroll: true });
   if (scene !== 'play' || paused || dialog) return;
   const bounds = canvas.getBoundingClientRect();
-  const clickX = camera.x + (event.clientX - bounds.left) * W / bounds.width;
-  const clickY = camera.y + (event.clientY - bounds.top) * H / bounds.height;
+  const clickX = camera.x + (event.clientX - bounds.left) * W / bounds.width / mapZoom;
+  const clickY = camera.y + (event.clientY - bounds.top) * H / bounds.height / mapZoom;
   const clicked = world.interactables
     .map(object => ({ object, clickDistance: Math.hypot(object.x - clickX, object.y - clickY), playerDistance: Math.hypot(object.x - player.x, object.y - player.y) }))
     .filter(entry => entry.clickDistance < 24 && entry.playerDistance < 72)
@@ -278,8 +311,9 @@ function update(dt) {
     player.step += dt * 12;
   }
   currentRoom = roomAt(player.x, player.y);
-  const targetX = Math.max(0, Math.min(world.width - W, player.x - W / 2));
-  const targetY = Math.max(0, Math.min(world.height - H, player.y - H / 2));
+  const target = cameraForPlayer();
+  const targetX = target.x;
+  const targetY = target.y;
   camera.x += (targetX - camera.x) * Math.min(1, dt * 7);
   camera.y += (targetY - camera.y) * Math.min(1, dt * 7);
 }
@@ -319,7 +353,7 @@ function drawPlayer() {
 
 function drawProp(prop) {
   const x = Math.round(prop.x - camera.x), y = Math.round(prop.y - camera.y);
-  if (x < -20 || x > W + 20 || y < -24 || y > H + 24) return;
+  if (x < -20 || x > viewWidth() + 20 || y < -24 || y > viewHeight() + 24) return;
   const box = (px, py, width, height, color) => { ctx.fillStyle = color; ctx.fillRect(x + px, y + py, width, height); };
   if (prop.type === 'cabinet') {
     box(-8,-6,16,12,'#302d25'); box(-7,-5,14,9,'#936343'); box(-5,-3,10,5,'#ba8a54'); box(-1,-1,2,2,'#e0c17b'); box(-6,5,12,2,'#40382a');
@@ -350,22 +384,26 @@ function drawProp(prop) {
 }
 function drawProps() { for (const prop of world.props) drawProp(prop); }
 function drawMap() {
-  if (mapReady) ctx.drawImage(mapArt, Math.round(camera.x), Math.round(camera.y), W, H, 0, 0, W, H);
-  else {
-    ctx.fillStyle = '#1a2923'; ctx.fillRect(0, 0, W, H);
+  const width = viewWidth(), height = viewHeight();
+  ctx.fillStyle = '#1a2923'; ctx.fillRect(0, 0, width, height);
+  if (mapReady) {
+    const sx = Math.max(0, camera.x), sy = Math.max(0, camera.y);
+    const ex = Math.min(world.width, camera.x + width), ey = Math.min(world.height, camera.y + height);
+    if (ex > sx && ey > sy) ctx.drawImage(mapArt, sx, sy, ex - sx, ey - sy, sx - camera.x, sy - camera.y, ex - sx, ey - sy);
+  } else {
     ctx.fillStyle = '#e0c995'; ctx.font = '14px monospace'; ctx.textAlign = 'center';
-    ctx.fillText(mapFailed ? 'WORLD MAP COULD NOT BE LOADED' : 'OPENING THE WORLD…', W / 2, H / 2);
+    ctx.fillText(mapFailed ? 'WORLD MAP COULD NOT BE LOADED' : 'OPENING THE WORLD…', width / 2, height / 2);
     ctx.textAlign = 'left';
   }
   // Soft room-specific light keeps the paths and glass readable at game scale.
   const ambient = world.ambient.find(layer => player.x >= layer.rect.x && player.x <= layer.rect.x + layer.rect.w && player.y >= layer.rect.y && player.y <= layer.rect.y + layer.rect.h);
-  if (ambient) { ctx.fillStyle = ambient.color; ctx.globalAlpha = ambient.strength; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
+  if (ambient) { ctx.fillStyle = ambient.color; ctx.globalAlpha = ambient.strength; ctx.fillRect(0, 0, width, height); ctx.globalAlpha = 1; }
   const isNight = world.id === 'underground-night';
   for (let i = 0; i < (isNight ? 18 : 12); i++) {
     const worldX = isNight ? 880 + (i * 67 % 590) : 1050 + (i * 67 % 430);
     const worldY = (isNight ? 330 : 250) + (i * 59 % (isNight ? 610 : 500)) + Math.sin(clock / 520 + i) * 2;
     const x = Math.round(worldX - camera.x), y = Math.round(worldY - camera.y);
-    if (x < 0 || x >= W || y < 0 || y >= H) continue;
+    if (x < 0 || x >= width || y < 0 || y >= height) continue;
     ctx.fillStyle = isNight ? (i % 3 === 0 ? '#75e4fa' : '#d596ff') : (i % 3 === 0 ? '#f3d480' : '#e0d996');
     ctx.globalAlpha = .5 + Math.sin(clock / 250 + i) * .2; ctx.fillRect(x, y, 2, 2);
   }
@@ -414,8 +452,8 @@ function drawPrompt() {
   const object = nearbyObject(); if (!object || dialog || paused || touchMode) return;
   const label = `E / CLICK  ${object.title}`;
   ctx.font = '8px monospace'; const width = Math.min(240, ctx.measureText(label).width + 22);
-  const x = Math.max(6, Math.min(W - width - 6, player.x - camera.x - width / 2));
-  const y = Math.max(50, player.y - camera.y - 28);
+  const x = Math.max(6, Math.min(W - width - 6, (player.x - camera.x) * mapZoom - width / 2));
+  const y = Math.max(50, (player.y - camera.y) * mapZoom - 28);
   ctx.fillStyle = '#142019ee'; ctx.fillRect(Math.round(x), Math.round(y), Math.ceil(width), 16);
   ctx.fillStyle = '#d8bd7f'; ctx.fillRect(Math.round(x), Math.round(y), 2, 16);
   ctx.fillStyle = '#f0ddb1'; ctx.fillText(label, Math.round(x + 8), Math.round(y + 11));
@@ -445,34 +483,38 @@ function drawNotice() {
   ctx.fillStyle = '#b5bc91'; ctx.textAlign = 'right'; ctx.fillText(dialog.action, W - 22, H - 20); ctx.textAlign = 'left';
 }
 function drawTitle() {
+  const panelWidth = Math.min(264, W - 24);
+  const panelX = Math.round((W - panelWidth) / 2), panelY = Math.round((H - 116) / 2);
   ctx.fillStyle = '#09110c9c'; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#17231c'; ctx.fillRect(60, 70, 264, 116);
-  ctx.fillStyle = '#d4a763'; ctx.fillRect(60, 70, 264, 2);
-  ctx.fillStyle = '#f0ddb1'; ctx.textAlign = 'center'; ctx.font = 'bold 28px monospace'; ctx.fillText('UNDERROOT', W / 2, 108);
-  ctx.fillStyle = '#b9c697'; ctx.font = '9px monospace'; ctx.fillText('A QUIET ECOLOGICAL EXPLORATION', W / 2, 126);
-  ctx.fillStyle = '#e2c47e'; ctx.font = '9px monospace'; ctx.fillText(touchMode ? 'TAP TO STEP INSIDE' : 'ENTER  ·  STEP INSIDE', W / 2, 166); ctx.textAlign = 'left';
+  ctx.fillStyle = '#17231c'; ctx.fillRect(panelX, panelY, panelWidth, 116);
+  ctx.fillStyle = '#d4a763'; ctx.fillRect(panelX, panelY, panelWidth, 2);
+  ctx.fillStyle = '#f0ddb1'; ctx.textAlign = 'center'; ctx.font = 'bold 28px monospace'; ctx.fillText('UNDERROOT', W / 2, panelY + 38);
+  ctx.fillStyle = '#b9c697'; ctx.font = '9px monospace'; ctx.fillText('A QUIET ECOLOGICAL EXPLORATION', W / 2, panelY + 56);
+  ctx.fillStyle = '#e2c47e'; ctx.font = '9px monospace'; ctx.fillText(touchMode ? 'TAP TO STEP INSIDE' : 'ENTER  ·  STEP INSIDE', W / 2, panelY + 96); ctx.textAlign = 'left';
 }
 function drawPause() {
-  ctx.fillStyle = '#09110cb0'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#18251d'; ctx.fillRect(116, 100, 152, 56);
-  ctx.fillStyle = '#d4a763'; ctx.fillRect(116, 100, 152, 2); ctx.fillStyle = '#f0ddb1'; ctx.font = 'bold 14px monospace'; ctx.textAlign = 'center'; ctx.fillText('PAUSED', W / 2, 124);
-  ctx.fillStyle = '#b9c697'; ctx.font = '8px monospace'; ctx.fillText('ESC · return to the garden', W / 2, 142); ctx.textAlign = 'left';
+  const panelWidth = Math.min(152, W - 24);
+  const panelX = Math.round((W - panelWidth) / 2), panelY = Math.round((H - 56) / 2);
+  ctx.fillStyle = '#09110cb0'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#18251d'; ctx.fillRect(panelX, panelY, panelWidth, 56);
+  ctx.fillStyle = '#d4a763'; ctx.fillRect(panelX, panelY, panelWidth, 2); ctx.fillStyle = '#f0ddb1'; ctx.font = 'bold 14px monospace'; ctx.textAlign = 'center'; ctx.fillText('PAUSED', W / 2, panelY + 24);
+  ctx.fillStyle = '#b9c697'; ctx.font = '8px monospace'; ctx.fillText('ESC · return to the garden', W / 2, panelY + 42); ctx.textAlign = 'left';
 }
 function drawMapDebug() {
   if (!mapDebug) return;
   ctx.save(); ctx.lineWidth = 1;
   for (const room of world.rooms) {
     ctx.setLineDash([3, 2]); ctx.strokeStyle = '#ffd34d';
-    ctx.strokeRect(room.bounds.x - camera.x, room.bounds.y - camera.y, room.bounds.w, room.bounds.h);
+    ctx.strokeRect((room.bounds.x - camera.x) * mapZoom, (room.bounds.y - camera.y) * mapZoom, room.bounds.w * mapZoom, room.bounds.h * mapZoom);
     ctx.setLineDash([]); ctx.fillStyle = '#ffe99b'; ctx.font = '6px monospace';
-    ctx.fillText(`ROOM ${room.id}`, room.bounds.x - camera.x + 3, room.bounds.y - camera.y + 16);
+    ctx.fillText(`ROOM ${room.id}`, (room.bounds.x - camera.x + 3) * mapZoom, (room.bounds.y - camera.y + 16) * mapZoom);
   }
   for (const object of world.interactables) {
-    const x = object.x - camera.x, y = object.y - camera.y;
-    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fillStyle = '#39c9ff99'; ctx.fill();
+    const x = (object.x - camera.x) * mapZoom, y = (object.y - camera.y) * mapZoom;
+    ctx.beginPath(); ctx.arc(x, y, 3 * mapZoom, 0, Math.PI * 2); ctx.fillStyle = '#39c9ff99'; ctx.fill();
     ctx.strokeStyle = '#8be5ff'; ctx.stroke(); ctx.fillStyle = '#c8f4ff'; ctx.font = '6px monospace';
-    ctx.fillText(`I ${object.id}`, x + 4, y - 3);
+    ctx.fillText(`I ${object.id}`, x + 4 * mapZoom, y - 3 * mapZoom);
   }
-  ctx.beginPath(); ctx.arc(player.x - camera.x, player.y - camera.y, 8, 0, Math.PI * 2);
+  ctx.beginPath(); ctx.arc((player.x - camera.x) * mapZoom, (player.y - camera.y) * mapZoom, 8 * mapZoom, 0, Math.PI * 2);
   ctx.strokeStyle = '#a6fffb'; ctx.stroke();
   ctx.fillStyle = '#142019ed'; ctx.fillRect(6, H - 32, W - 12, 26);
   ctx.fillStyle = '#f0ddb1'; ctx.font = '6px monospace';
@@ -486,7 +528,11 @@ function render(now) {
   const dt = Math.min(.05, Math.max(0, (now - (lastTime || now)) / 1000)); lastTime = now;
   update(dt);
   updateTouchControls();
-  ctx.clearRect(0, 0, W, H); drawMap(); drawTankNightMode(); drawProps(); drawPlayer(); drawHUD(); drawNotice(); drawPrompt();
+  ctx.clearRect(0, 0, W, H);
+  ctx.save(); ctx.scale(mapZoom, mapZoom);
+  drawMap(); drawTankNightMode(); drawProps(); drawPlayer();
+  ctx.restore();
+  drawHUD(); drawNotice(); drawPrompt();
   if (scene === 'title') drawTitle();
   if (paused) drawPause();
   if (dialog) drawDialog();
