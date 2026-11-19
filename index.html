@@ -15,22 +15,16 @@
       <button id="move-stick" class="move-stick" type="button" aria-label="Movement joystick">
         <span class="move-stick__ring"><span class="move-stick__knob"></span></span>
       </button>
-      <div class="touch-actions">
-        <button id="touch-interact" class="touch-action" type="button" aria-label="Start or interact">
-          <span class="touch-action__key">E</span><span>START / INTERACT</span>
-        </button>
-        <button id="touch-pause" class="touch-action touch-action--pause" type="button" aria-label="Pause or resume">
-          <span class="touch-action__key">Ⅱ</span><span>PAUSE</span>
-        </button>
-      </div>
+      <button id="touch-pause" class="touch-pause" type="button" aria-label="Pause" aria-pressed="false" hidden><span>Ⅱ</span></button>
+      <button id="touch-interact" class="touch-interact" type="button" aria-label="Interact" hidden>
+        <span class="touch-interact__glyph" aria-hidden="true">✧</span>
+        <span class="touch-interact__copy"><strong id="touch-interact-name">INTERACT</strong><small>INSPECT</small></span>
+      </button>
     </div>
     <footer class="controls" aria-label="Game controls">
       <span class="controls__title">FIELD NOTES</span>
-      <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk</span>
-      <span><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> move</span>
       <span><kbd>E</kbd> / click inspect</span>
       <span><kbd>ESC</kbd> pause</span>
-      <span><kbd>F3</kbd> collision view</span>
     </footer>
   </main>
   <script type="module" src="./src/main.js"></script>

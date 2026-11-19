@@ -42,6 +42,12 @@ const camera = { x: 0, y: 0 };
 const keys = new Set();
 const moveStick = document.querySelector('#move-stick');
 const moveStickKnob = moveStick?.querySelector('.move-stick__knob');
+const touchMode = window.matchMedia('(pointer: coarse)').matches;
+const touchInteract = document.querySelector('#touch-interact');
+const touchInteractName = document.querySelector('#touch-interact-name');
+const touchInteractHint = touchInteract?.querySelector('small');
+const touchPause = document.querySelector('#touch-pause');
+const touchPauseIcon = touchPause?.querySelector('span');
 const virtualStick = { x: 0, y: 0 };
 let stickPointerId = null;
 let scene = 'title';
@@ -55,61 +61,27 @@ let noticeEnd = 0;
 let lastTime = 0;
 let clock = 0;
 let currentRoom = world.rooms[0];
-let collisionDebug = false;
+let mapDebug = false;
 
 const palette = {
-  outline: '#272922', hair: '#3e3328', skin: '#e2b880', shirt: '#4c8070', shirtLight: '#80ad86',
-  pack: '#bd8050', packLight: '#e0af64', pants: '#344b3e', boots: '#52443a', eye: '#29302a', tool: '#e3b65f',
+  outline: '#24414a', body: '#d9f1d7', glow: '#9ef0d6', shade: '#79b9ad', eye: '#293642',
 };
 const sprites = {
   down: [
-    '....OOOO....', '...OHHHOO...', '..OHHHHHHO..', '..OHSSSSHO..', '..OHSESSHO..', '..OHSSSSHO..', '...OHHHOO...', '...OPGGPO...', '..OPPGGGPO..', '..OGGGGGGO..', '..OGGGGGGO..', '...OGGGO....', '..OB..BO....', '..OB..BO....', '...OOOO.....',
+    '....OOOO....', '...OWWWWO...', '..OWWWWWO..', '.OWWWWWWWO.', 'OWWWWWWWWWO', 'OWWLEWWLEWWO', 'OWWLEWWLEWWO', 'OWWWSSSSWWWO', 'OWWWWWWWWWO', 'OWWWWWWWWWO', '.OWWWLLWWWO.', '.OWWLLLWWWO.', '..OWW..WWO..', '...OW..WO...', '....O..O....',
   ],
   up: [
-    '....OOOO....', '...OHHHOO...', '..OHHHHHHO..', '..OHHHHHHO..', '..OHHHHHHO..', '...OHHHOO...', '...OPGGPO...', '..OPPGGGPO..', '..OGGGGGGO..', '..OGGGGGGO..', '...OGGGO....', '..OB..BO....', '..OB..BO....', '...OOOO.....',
+    '....OOOO....', '...OWWWWO...', '..OWWWWWO..', '.OWWWWWWWO.', 'OWWWWWWWWWO', 'OWWWLWWLWWWO', 'OWWWWWWWWWO', 'OWWWSSSSWWWO', 'OWWWWWWWWWO', 'OWWWWWWWWWO', '.OWWWLLWWWO.', '.OWWLLLWWWO.', '..OWW..WWO..', '...OW..WO...', '....O..O....',
   ],
   side: [
-    '....OOOO....', '...OHHHOO...', '..OHHHHHHO..', '..OHSSSSHO..', '..OHSESSHO..', '..OHSSSSHO..', '...OHHHOO...', '...OPGGPO...', '..OPPGGGPO..', '..OGGGGGGO..', '..OGGGGGGO..', '...OGGGO....', '..OB..BO....', '..OB..BO....', '...OOOO.....',
+    '....OOOO....', '...OWWWWO...', '..OWWWWWO..', '.OWWWWWWWO.', 'OWWWWWWWWWO', 'OWWWWWWLEWWO', 'OWWWWWWWWWO', 'OWWWSSSSWWWO', 'OWWWWWWWWWO', 'OWWWWWWWWWO', '.OWWWLLWWWO.', '.OWWLLLWWWO.', '..OWW..WWO..', '...OW..WO...', '....O..O....',
   ],
 };
-const spriteColor = { O: palette.outline, H: palette.hair, S: palette.skin, E: palette.eye, G: palette.shirt, g: palette.shirtLight, P: palette.pack, p: palette.packLight, B: palette.pants, b: palette.boots };
+const spriteColor = { O: palette.outline, W: palette.body, L: palette.glow, S: palette.shade, E: palette.eye };
 
-function rectsOverlap(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
-function polygonRectOverlap(points, rect) {
-  const corners = [[rect.x, rect.y], [rect.x + rect.w, rect.y], [rect.x + rect.w, rect.y + rect.h], [rect.x, rect.y + rect.h]];
-  const axes = [[1, 0], [0, 1]];
-  for (let i = 0; i < points.length; i++) {
-    const a = points[i], b = points[(i + 1) % points.length];
-    axes.push([a[1] - b[1], b[0] - a[0]]);
-  }
-  return axes.every(([ax, ay]) => {
-    const projection = vertices => vertices.map(([x, y]) => x * ax + y * ay);
-    const p = projection(points), r = projection(corners);
-    return Math.max(...p) > Math.min(...r) && Math.max(...r) > Math.min(...p);
-  });
-}
-function overlapsSolid(body, solid) {
-  return solid.shape === 'polygon' ? polygonRectOverlap(solid.points, body) : rectsOverlap(body, solid);
-}
-function walkableAt(x, y) { return world.walkable.some(area => x >= area.x && y >= area.y && x < area.x + area.w && y < area.y + area.h); }
-function footprintOnPath(x, y) {
-  // Keep the whole grounded hitbox on the route, including when its corners
-  // straddle two adjoining walkable segments.
-  const halfW = 5, halfH = 4;
-  const samples = [
-    [x - halfW, y - halfH], [x, y - halfH], [x + halfW - 0.01, y - halfH],
-    [x - halfW, y], [x, y], [x + halfW - 0.01, y],
-    [x - halfW, y + halfH - 0.01], [x, y + halfH - 0.01], [x + halfW - 0.01, y + halfH - 0.01],
-  ];
-  return samples.every(([sampleX, sampleY]) => walkableAt(sampleX, sampleY));
-}
-function activeSolids() {
-  const closedGates = world.gates.filter(gate => !progress[gate.unlockedBy]).map(gate => ({ ...gate.rect, id: gate.id }));
-  return [...world.solids, ...closedGates];
-}
-function canStand(x, y) {
+function insideWorld(x, y) {
   const body = { x: x - 5, y: y - 4, w: 10, h: 8 };
-  return footprintOnPath(x, y) && !activeSolids().some(solid => overlapsSolid(body, solid));
+  return body.x >= 0 && body.y >= 0 && body.x + body.w <= world.width && body.y + body.h <= world.height;
 }
 function roomAt(x, y) {
   return world.rooms.find(room => x >= room.bounds.x && y >= room.bounds.y && x < room.bounds.x + room.bounds.w && y < room.bounds.y + room.bounds.h) || world.rooms[0];
@@ -214,6 +186,35 @@ function resetVirtualStick(event) {
   virtualStick.x = 0; virtualStick.y = 0;
   if (moveStickKnob) moveStickKnob.style.transform = 'translate(-50%,-50%)';
 }
+function updateTouchControls() {
+  if (!touchMode) return;
+  const inGame = scene === 'play';
+  moveStick.hidden = !inGame;
+  touchPause.hidden = !inGame;
+  touchPause.setAttribute('aria-pressed', String(paused));
+  touchPause.setAttribute('aria-label', paused ? 'Resume' : 'Pause');
+  if (touchPauseIcon) touchPauseIcon.textContent = paused ? '▶' : 'Ⅱ';
+
+  const object = inGame && !paused && !dialog ? nearbyObject() : null;
+  const showInteract = inGame && !paused && (Boolean(object) || Boolean(dialog));
+  touchInteract.hidden = !showInteract;
+  if (!showInteract) return;
+  const target = object || { title: 'CONTINUE', x: player.x, y: player.y };
+  touchInteractName.textContent = target.title;
+  if (touchInteractHint) touchInteractHint.textContent = dialog ? 'TAP TO CONTINUE' : 'INSPECT';
+  touchInteract.setAttribute('aria-label', dialog ? 'Continue' : `Inspect ${target.title}`);
+  const scaleX = canvas.clientWidth / W;
+  const scaleY = canvas.clientHeight / H;
+  const targetX = (target.x - camera.x) * scaleX;
+  const targetY = (target.y - camera.y) * scaleY;
+  const buttonWidth = touchInteract.offsetWidth;
+  const buttonHeight = touchInteract.offsetHeight;
+  const left = Math.max(buttonWidth / 2 + 12, Math.min(canvas.clientWidth - buttonWidth / 2 - 12, targetX));
+  const top = Math.max(buttonHeight + 12, Math.min(canvas.clientHeight - 12, targetY));
+  touchInteract.style.left = `${Math.round(left)}px`;
+  touchInteract.style.top = `${Math.round(top)}px`;
+  touchInteract.classList.toggle('touch-interact--below', targetY < buttonHeight + 20);
+}
 moveStick?.addEventListener('pointerdown', event => {
   event.preventDefault();
   stickPointerId = event.pointerId;
@@ -233,7 +234,7 @@ document.querySelector('#touch-interact')?.addEventListener('click', () => {
 document.querySelector('#touch-pause')?.addEventListener('click', () => {
   if (scene !== 'play') return;
   paused = !paused; dialog = null; keys.clear(); resetVirtualStick();
-  document.querySelector('#touch-pause')?.setAttribute('aria-pressed', String(paused));
+  updateTouchControls();
 });
 canvas.addEventListener('pointerdown', event => {
   if (scene === 'title') { startGame(); return; }
@@ -251,9 +252,9 @@ canvas.addEventListener('pointerdown', event => {
 document.addEventListener('keydown', event => {
   const code = event.code;
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(code)) event.preventDefault();
-  if (code === 'F3' && !event.repeat) { event.preventDefault(); collisionDebug = !collisionDebug; keys.clear(); return; }
+  if (code === 'F3' && !event.repeat) { event.preventDefault(); mapDebug = !mapDebug; keys.clear(); return; }
   if (scene === 'title' && ['Enter', 'Space'].includes(code)) { startGame(); return; }
-  if (code === 'Escape' && !event.repeat && scene === 'play') { paused = !paused; dialog = null; keys.clear(); resetVirtualStick(); document.querySelector('#touch-pause')?.setAttribute('aria-pressed', String(paused)); return; }
+  if (code === 'Escape' && !event.repeat && scene === 'play') { paused = !paused; dialog = null; keys.clear(); resetVirtualStick(); updateTouchControls(); return; }
   if (code === 'KeyE' && !event.repeat && scene === 'play') { interact(); return; }
   if (['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(code)) keys.add(code);
 }, { capture: true });
@@ -272,8 +273,8 @@ function update(dt) {
     const moveY = dy / length * 112 * dt;
     if (dx) player.facing = Math.abs(dx) >= Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : player.facing;
     if (dy && Math.abs(dy) >= Math.abs(dx)) player.facing = dy < 0 ? 'up' : 'down';
-    if (canStand(player.x + moveX, player.y)) player.x += moveX;
-    if (canStand(player.x, player.y + moveY)) player.y += moveY;
+    if (insideWorld(player.x + moveX, player.y)) player.x += moveX;
+    if (insideWorld(player.x, player.y + moveY)) player.y += moveY;
     player.step += dt * 12;
   }
   currentRoom = roomAt(player.x, player.y);
@@ -286,34 +287,34 @@ function update(dt) {
 function drawPixelSprite(x, y) {
   const facing = player.facing === 'left' || player.facing === 'right' ? 'side' : player.facing;
   const rows = sprites[facing];
-  const walking = player.moving && Math.floor(player.step) % 2 === 0;
-  const leftBoot = walking ? 1 : 0;
-  const rightBoot = walking ? -1 : 0;
   ctx.save();
   ctx.translate(Math.round(x - 6), Math.round(y - 9));
   if (player.facing === 'left') { ctx.translate(12, 0); ctx.scale(-1, 1); }
+  ctx.globalAlpha = .94;
   for (let row = 0; row < rows.length; row++) {
     for (let col = 0; col < rows[row].length; col++) {
-      let pixel = rows[row][col];
-      if (walking && row === 12 && col === 3) pixel = leftBoot ? 'B' : pixel;
-      if (walking && row === 12 && col === 6) pixel = rightBoot ? 'B' : pixel;
+      const pixel = rows[row][col];
       const color = spriteColor[pixel];
       if (color) { ctx.fillStyle = color; ctx.fillRect(col, row, 1, 1); }
     }
   }
-  // A copper-handled field tool and the pack's small brass clasp.
-  ctx.fillStyle = palette.tool;
-  if (player.facing === 'right') ctx.fillRect(11, 8, 2, 1);
-  else if (player.facing === 'left') ctx.fillRect(0, 8, 2, 1);
-  else ctx.fillRect(8, 9, 1, 2);
-  ctx.fillStyle = palette.packLight; ctx.fillRect(4, 8, 1, 1);
   ctx.restore();
 }
 function drawPlayer() {
   const x = player.x - camera.x;
   const y = player.y - camera.y;
-  ctx.fillStyle = '#15201966'; ctx.fillRect(Math.round(x - 7), Math.round(y + 5), 14, 4);
-  drawPixelSprite(x, y + (player.moving ? Math.floor(player.step) % 2 : 0));
+  const bob = Math.sin(clock / 230) * 1.35 + (player.moving ? Math.sin(player.step * 1.4) * .45 : 0);
+  const ghostY = y + bob;
+  ctx.save();
+  const aura = ctx.createRadialGradient(x, ghostY, 1, x, ghostY, 17);
+  aura.addColorStop(0, 'rgba(151,255,226,.25)'); aura.addColorStop(1, 'rgba(72,199,183,0)');
+  ctx.fillStyle = aura; ctx.fillRect(x - 18, ghostY - 18, 36, 36);
+  ctx.globalAlpha = .2; ctx.fillStyle = '#91eed5'; ctx.beginPath(); ctx.ellipse(x, y + 9, 4.5, 1.4, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.globalAlpha = .9; ctx.fillStyle = '#d4fff0';
+  const moteX = Math.round(x + Math.sin(clock / 260) * 10), moteY = Math.round(ghostY - 7 + Math.cos(clock / 310) * 8);
+  ctx.fillRect(moteX, moteY, 1, 1);
+  ctx.restore();
+  drawPixelSprite(x, ghostY);
 }
 
 function drawProp(prop) {
@@ -410,7 +411,7 @@ function nearbyObject() {
   return world.interactables.map(object => ({ object, distance: Math.hypot(object.x - player.x, object.y - player.y) })).filter(entry => entry.distance < 36).sort((a,b) => a.distance - b.distance)[0]?.object;
 }
 function drawPrompt() {
-  const object = nearbyObject(); if (!object || dialog || paused) return;
+  const object = nearbyObject(); if (!object || dialog || paused || touchMode) return;
   const label = `E / CLICK  ${object.title}`;
   ctx.font = '8px monospace'; const width = Math.min(240, ctx.measureText(label).width + 22);
   const x = Math.max(6, Math.min(W - width - 6, player.x - camera.x - width / 2));
@@ -449,40 +450,21 @@ function drawTitle() {
   ctx.fillStyle = '#d4a763'; ctx.fillRect(60, 70, 264, 2);
   ctx.fillStyle = '#f0ddb1'; ctx.textAlign = 'center'; ctx.font = 'bold 28px monospace'; ctx.fillText('UNDERROOT', W / 2, 108);
   ctx.fillStyle = '#b9c697'; ctx.font = '9px monospace'; ctx.fillText('A QUIET ECOLOGICAL EXPLORATION', W / 2, 126);
-  ctx.fillStyle = '#e2c47e'; ctx.font = '9px monospace'; ctx.fillText('ENTER  ·  STEP INSIDE', W / 2, 166); ctx.textAlign = 'left';
+  ctx.fillStyle = '#e2c47e'; ctx.font = '9px monospace'; ctx.fillText(touchMode ? 'TAP TO STEP INSIDE' : 'ENTER  ·  STEP INSIDE', W / 2, 166); ctx.textAlign = 'left';
 }
 function drawPause() {
   ctx.fillStyle = '#09110cb0'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#18251d'; ctx.fillRect(116, 100, 152, 56);
   ctx.fillStyle = '#d4a763'; ctx.fillRect(116, 100, 152, 2); ctx.fillStyle = '#f0ddb1'; ctx.font = 'bold 14px monospace'; ctx.textAlign = 'center'; ctx.fillText('PAUSED', W / 2, 124);
   ctx.fillStyle = '#b9c697'; ctx.font = '8px monospace'; ctx.fillText('ESC · return to the garden', W / 2, 142); ctx.textAlign = 'left';
 }
-function drawDebugShape(shape, fill, stroke) {
-  ctx.fillStyle = fill; ctx.strokeStyle = stroke; ctx.beginPath();
-  if (shape.shape === 'polygon') {
-    shape.points.forEach(([x, y], index) => index ? ctx.lineTo(x - camera.x, y - camera.y) : ctx.moveTo(x - camera.x, y - camera.y));
-    ctx.closePath();
-  } else ctx.rect(shape.x - camera.x, shape.y - camera.y, shape.w, shape.h);
-  ctx.fill(); ctx.stroke();
-}
-function drawCollisionDebug() {
-  if (!collisionDebug) return;
+function drawMapDebug() {
+  if (!mapDebug) return;
   ctx.save(); ctx.lineWidth = 1;
-  for (const area of world.walkable) {
-    drawDebugShape(area, '#42e66b24', '#62f58a99');
-    ctx.fillStyle = '#bdffd0'; ctx.font = '6px monospace';
-    ctx.fillText(`WALK ${area.id || ''}`, area.x - camera.x + 3, area.y - camera.y + 8);
-  }
   for (const room of world.rooms) {
     ctx.setLineDash([3, 2]); ctx.strokeStyle = '#ffd34d';
     ctx.strokeRect(room.bounds.x - camera.x, room.bounds.y - camera.y, room.bounds.w, room.bounds.h);
     ctx.setLineDash([]); ctx.fillStyle = '#ffe99b'; ctx.font = '6px monospace';
     ctx.fillText(`ROOM ${room.id}`, room.bounds.x - camera.x + 3, room.bounds.y - camera.y + 16);
-  }
-  for (const solid of activeSolids()) {
-    drawDebugShape(solid, '#ff4e4938', '#ff7a70');
-    const x = solid.shape === 'polygon' ? Math.min(...solid.points.map(point => point[0])) : solid.x;
-    const y = solid.shape === 'polygon' ? Math.min(...solid.points.map(point => point[1])) : solid.y;
-    ctx.fillStyle = '#ffd0cb'; ctx.font = '6px monospace'; ctx.fillText(`SOLID ${solid.id}`, x - camera.x + 2, y - camera.y + 7);
   }
   for (const object of world.interactables) {
     const x = object.x - camera.x, y = object.y - camera.y;
@@ -490,23 +472,24 @@ function drawCollisionDebug() {
     ctx.strokeStyle = '#8be5ff'; ctx.stroke(); ctx.fillStyle = '#c8f4ff'; ctx.font = '6px monospace';
     ctx.fillText(`I ${object.id}`, x + 4, y - 3);
   }
-  drawDebugShape({ x: player.x - 5, y: player.y - 4, w: 10, h: 8 }, '#32f5ef66', '#a6fffb');
+  ctx.beginPath(); ctx.arc(player.x - camera.x, player.y - camera.y, 8, 0, Math.PI * 2);
+  ctx.strokeStyle = '#a6fffb'; ctx.stroke();
   ctx.fillStyle = '#142019ed'; ctx.fillRect(6, H - 32, W - 12, 26);
   ctx.fillStyle = '#f0ddb1'; ctx.font = '6px monospace';
-  ctx.fillText('F3 COLLISION · GREEN WALK · RED SOLID · YELLOW ROOM · BLUE OBJECT · CYAN BODY', 10, H - 21);
-  const blocked = [['N',0,-7],['S',0,7],['W',-7,0],['E',7,0]].filter(([,dx,dy]) => !canStand(player.x + dx, player.y + dy)).map(([label]) => label).join('') || 'none';
+  ctx.fillText('F3 MAP VIEW · YELLOW AREAS · BLUE INTERACTIONS · CYAN GHOST · FREE ROAM', 10, H - 21);
   ctx.fillStyle = '#c8d6b1';
-  ctx.fillText(`PLAYER ${Math.round(player.x)},${Math.round(player.y)} · ${currentRoom.id} · BLOCK ${blocked}`, 10, H - 10);
+  ctx.fillText(`GHOST ${Math.round(player.x)},${Math.round(player.y)} · ${currentRoom.id}`, 10, H - 10);
   ctx.restore();
 }
 function render(now) {
   requestAnimationFrame(render);
   const dt = Math.min(.05, Math.max(0, (now - (lastTime || now)) / 1000)); lastTime = now;
   update(dt);
+  updateTouchControls();
   ctx.clearRect(0, 0, W, H); drawMap(); drawTankNightMode(); drawProps(); drawPlayer(); drawHUD(); drawNotice(); drawPrompt();
   if (scene === 'title') drawTitle();
   if (paused) drawPause();
   if (dialog) drawDialog();
-  drawCollisionDebug();
+  drawMapDebug();
 }
 requestAnimationFrame(render);

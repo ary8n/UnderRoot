@@ -1,6 +1,6 @@
 # Area 01 — Greenhouse and Settlement
 
-Area 01 is a single continuous, overhead map (`1536 × 1024` world pixels). A top-down greenhouse, its lower service passage, and the adjacent settlement courtyard connect through a central stair and an east service gate. The map is painted as one coherent backdrop; the game separately defines walkable zones, walls, furnishings, gates, props, and story interactions.
+Area 01 is a single continuous, overhead map (`1536 × 1024` world pixels). A top-down greenhouse, its lower service passage, and the adjacent settlement courtyard connect through a central stair and an east service gate. The ghost can roam freely across the painted map; movement is bounded only by the map edges.
 
 ## Room layout
 
@@ -11,31 +11,19 @@ Area 01 is a single continuous, overhead map (`1536 × 1024` world pixels). A to
 | Lower service passage | x 18–948, y 770–960 | Pumps, breaker, compost and research notes |
 | Settlement courtyard | x 908–1536, y 0–1024 | East gate; winding garden paths, wind pump, tanks and shed |
 
-These room bounds label the spaces; the named walkable lanes below control where the player can step. The gate at x=948, y=510–604 stays blocked until the lower breaker is restored. The service stair remains open from the start.
+Room bounds label spaces for the HUD and map debug overlay. They do not constrain movement. The ghost can drift over beds, machinery, walls and gates; gate power still matters to restoration progression.
 
-## Walkable routes and collision inventory
+## Free-roam movement
 
-`src/data/greenhouseWorld.js` is the active area definition. The older `src/data/greenhouse.js` describes the retired side-scrolling prototype and is not imported by the game.
+`src/data/greenhouseWorld.js` and `src/data/undergroundNightWorld.js` define the active areas. The older `src/data/greenhouse.js` describes the retired side-scrolling prototype and is not imported by the game.
 
-Walkable zones trace the paved aisles around the planting beds and console, the central stair, the lower utility floor, and the courtyard’s stone routes. The player cannot leave these lanes for greenhouse beds or courtyard grass. The routes connect the notes, seed cabinet, rain still, console, service-room equipment, courtyard wind pump, shed and optional bed.
+Legacy walkable rectangles and object collision footprints remain as map notes, but movement does not consult them. Interactions continue to use their markers and proximity checks.
 
-| Section | Solid objects and boundaries | Geometry choice |
-|---|---|---|
-| Greenhouse | Glass perimeter, south wall and stair walls | Continuous rectangles with explicit doorway gaps |
-| Greenhouse | North water garden; west/east display beds; console side islands; two south beds | Polygon footprints follow the clipped stone rims |
-| Greenhouse | Research bench, stool, storage cabinet, console base, seed cabinet, cisterns, rain controls, east service bench and cabinet | Rectangles at the furniture or machinery base; overhead foliage stays passable |
-| Service passage | Passage foundation, pump feet, tank base, electrical cabinet bases, compost bin | Wall rectangle and compact grounded footprints |
-| Courtyard | Windmill foot, cistern bases, shed foundation, water cart, round/tree bed, vegetable beds, arch supports and north stream | Small base rectangles, planter polygons and one water polygon; arch openings stay open |
-
-The underground night area uses the same route-only rule. Its entry stair connects to the reactor approach, upper waterworks bridge, and fungal-grove paths; mushroom beds, crystals, rocks and water remain blocked.
-
-Flowers, small plants, grass, shadows, roof beams, wall-mounted pipes and floor texture do not add collision. Interactive markers remain independent of the blockers. The console marker is positioned at its reachable south edge; other equipment can be inspected from adjacent floor without entering its footprint.
-
-The temporary collision view toggles with **F3** and is off by default. Green shows walkable zones, red shows current blockers (including a closed gate), yellow outlines room bounds, blue marks interactables, and cyan shows the player AABB. It is rendered after the world so it is visible during route checks.
+The **F3 map view** is a developer overlay: yellow outlines room bounds, blue marks interactions, and cyan marks the ghost. It does not show movement blockers.
 
 ## Movement and camera
 
-Movement is normalized in four directions. Axis-separated AABB collision lets the player slide along furniture and planter edges. Rectangles represent walls and compact physical bases; polygon-vs-AABB SAT tests follow irregular raised beds and the stream edge. The player footprint is 10 × 8 world pixels, smaller than the sprite so the feet anchor collision. Diagonal speed is unchanged. The camera follows both axes across the 1536 × 1024 map. The canvas is a 384 × 256 logical viewport with nearest-neighbour scaling.
+Movement is normalized in four directions for keyboard and touch joystick input. The ghost passes over all map geometry and remains inside the world bounds. The camera follows both axes across the 1536 × 1024 map. The canvas is a 384 × 256 logical viewport with nearest-neighbour scaling.
 
 ## Exploration and restoration
 

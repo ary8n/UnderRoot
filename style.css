@@ -11,14 +11,19 @@ kbd{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 
 @media(max-height:420px){.controls{min-height:30px;padding-top:5px}kbd{height:17px;min-width:18px}}
 
 .touch-controls{display:none;position:absolute;z-index:5;inset:0;width:100%;height:100%;pointer-events:none;touch-action:none;user-select:none;-webkit-user-select:none}
-.move-stick{position:absolute;left:clamp(10px,3vw,24px);bottom:clamp(10px,3vw,22px);width:clamp(100px,17vw,148px);aspect-ratio:1;padding:0;border:0;border-radius:50%;background:#111a1680;box-shadow:0 3px 12px #0008;pointer-events:auto;touch-action:none}
-.move-stick__ring{position:absolute;inset:7%;display:block;border:2px solid #b8c49a9c;border-radius:50%;background:radial-gradient(circle,#29382e88 0 34%,#17231ccc 72%);box-shadow:inset 0 0 0 2px #111a1688}
-.move-stick__knob{position:absolute;left:50%;top:50%;width:42%;height:42%;border:2px solid #d5c28c;border-radius:50%;background:linear-gradient(145deg,#68795b,#344638);box-shadow:0 2px 6px #0009,inset 0 1px #c1ca93;transform:translate(-50%,-50%);will-change:transform}
-.move-stick:active .move-stick__knob{background:linear-gradient(145deg,#82936a,#405842)}
-.touch-actions{position:absolute;right:clamp(10px,3vw,24px);bottom:clamp(10px,3vw,22px);display:flex;align-items:flex-end;gap:clamp(7px,1.5vw,14px);pointer-events:none}
-.touch-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:clamp(62px,10vw,84px);height:clamp(62px,10vw,84px);padding:4px;border:1px solid #a28c5e;border-radius:50%;color:#eee1b9;background:linear-gradient(155deg,#3a4939eF,#18231feF);box-shadow:0 3px 10px #0009,inset 0 1px #c3ba8b77;font:700 clamp(7px,1.2vw,9px) "Courier New",monospace;letter-spacing:.02em;text-align:center;pointer-events:auto;touch-action:manipulation}
-.touch-action:active{transform:translateY(2px);background:linear-gradient(155deg,#566548,#25382d)}
-.touch-action__key{display:grid;place-items:center;width:26px;height:24px;border:1px solid #8d9468;border-radius:4px;color:#f5dda0;background:#26372d;font-size:15px;box-shadow:0 2px #1118}
-.touch-action--pause .touch-action__key{font-size:14px}
-@media (pointer:coarse),(hover:none),(max-width:900px){.touch-controls{display:block}}
-@media(max-width:420px){.move-stick{width:96px}.touch-action{width:60px;height:60px;font-size:7px}.touch-action__key{width:23px;height:21px;font-size:13px}}
+.touch-controls [hidden]{display:none!important}
+.move-stick{position:absolute;left:clamp(14px,4vw,30px);bottom:clamp(18px,4vh,38px);width:clamp(112px,18vw,150px);aspect-ratio:1;padding:0;border:1px solid #e5f4dd24;border-radius:50%;background:#17211d12;box-shadow:inset 0 0 18px #e6f3dc0a,0 4px 18px #07100d20;backdrop-filter:blur(2px);pointer-events:auto;touch-action:none}
+.move-stick__ring{position:absolute;inset:7%;display:block;border:1px solid #e5f4dd45;border-radius:50%;background:radial-gradient(circle,#d4ecda10 0 34%,#15201b22 35% 72%,#d4ecda08 73%);box-shadow:inset 0 0 0 1px #0b151133}
+.move-stick__knob{position:absolute;left:50%;top:50%;width:39%;height:39%;border:1px solid #edf5d999;border-radius:50%;background:linear-gradient(145deg,#d5eadb70,#829c8d55);box-shadow:0 2px 10px #07100d28,inset 0 1px #f5ffeb68;transform:translate(-50%,-50%);will-change:transform;backdrop-filter:blur(3px)}
+.move-stick:active .move-stick__knob{background:linear-gradient(145deg,#e0f2df88,#9db4a177)}
+.touch-pause{position:absolute;top:clamp(14px,3vh,26px);right:clamp(14px,3vw,28px);display:grid;place-items:center;width:42px;height:42px;padding:0;border:1px solid #e5f4dd55;border-radius:50%;color:#f1ecd9;background:#18231e66;box-shadow:0 3px 12px #07100d30;font:16px "Courier New",monospace;backdrop-filter:blur(6px);pointer-events:auto;touch-action:manipulation}
+.touch-pause:active{background:#596b5c88}
+.touch-interact{position:absolute;left:50%;top:50%;display:flex;align-items:center;gap:9px;min-height:48px;max-width:calc(100% - 28px);padding:5px 14px 5px 6px;transform:translate(-50%,-125%);border:1px solid #eee1b985;border-radius:25px 9px 25px 25px;color:#f2eedb;background:linear-gradient(135deg,#25352fc9,#111b18ad);box-shadow:0 5px 18px #07100d50,inset 0 1px #fff5;backdrop-filter:blur(9px);font:700 9px "Courier New",monospace;letter-spacing:.06em;text-align:left;pointer-events:auto;touch-action:manipulation}
+.touch-interact:active{background:linear-gradient(135deg,#465b49e8,#1b2b24e8)}
+.touch-interact--below{transform:translate(-50%,12px)}
+.touch-interact__glyph{display:grid;flex:0 0 36px;place-items:center;width:36px;height:36px;border:1px solid #e6d5a8b8;border-radius:50%;color:#f3dda0;background:radial-gradient(circle,#d7c89642,#18231f9c 72%);box-shadow:0 0 12px #d5c58b38;font-size:20px}
+.touch-interact__copy{display:flex;min-width:0;flex-direction:column;gap:3px}
+.touch-interact__copy strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px}
+.touch-interact__copy small{color:#c4d1b1;font-size:7px;letter-spacing:.17em}
+@media (pointer:coarse){.touch-controls{display:block}.controls{display:none}}
+@media(max-width:420px){.move-stick{width:112px}.touch-interact{gap:7px;min-height:44px;padding-right:10px}.touch-interact__glyph{flex-basis:32px;width:32px;height:32px}}
